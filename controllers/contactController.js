@@ -25,17 +25,8 @@ exports.submitContact = async (req, res) => {
       },
     });
 
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: "New Portfolio Message",
-      html: `
-        <h3>New Contact Message</h3>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b> ${message}</p>
-      `,
-    });
+    console.log("Skipping email send (debug mode)");
+
 
     res.status(201).json({
       message: "Message sent successfully",
