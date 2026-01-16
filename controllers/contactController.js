@@ -1,5 +1,7 @@
 const Contact = require("../models/Contact");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.submitContact = async (req, res) => {
   try {
@@ -16,18 +18,10 @@ exports.submitContact = async (req, res) => {
       message,
     });
 
-    // Email setup
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+    // Send Email (Resend API - Cloud Safe)
+    await resend.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
+      to: [process.env.EMAIL_USER], // your inbox
       subject: "New Portfolio Message",
       html: `
         <h3>New Contact Message</h3>
@@ -42,7 +36,10 @@ exports.submitContact = async (req, res) => {
       data: newContact,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Contact API Error:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
