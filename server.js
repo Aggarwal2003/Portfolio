@@ -8,13 +8,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const app = express();
 
 // Middleware
-const cors = require("cors");
-
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"],
-}));
-
+app.use(cors());
 app.use(express.json());
 
 // DB
